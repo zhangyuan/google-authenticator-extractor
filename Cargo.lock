@@ -242,7 +242,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "google-authenticator-extractor"
+name = "google_authenticator_extractor"
 version = "0.0.1"
 dependencies = [
  "base32",
