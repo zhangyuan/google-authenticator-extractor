@@ -12,13 +12,6 @@ use serde_json;
 
 mod protos;
 
-#[derive(Debug, StructOpt)]
-#[structopt(name = "google-authenticator-extractor", about = "Extract information from the qrcode exported from google authenticator.")]
-struct Opt {
-    #[structopt(short, parse(from_os_str))]
-    image: PathBuf,
-}
-
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let opt: Opt = Opt::from_args();
     let text = extract_text_from_qrcode(opt.image)?;
@@ -31,17 +24,26 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
+#[derive(Debug, StructOpt)]
+#[structopt(name = "google-authenticator-extractor", about = "Extract information from the qrcode exported from google authenticator.")]
+struct Opt {
+    #[structopt(short, parse(from_os_str))]
+    image: PathBuf,
+}
+
 #[derive(Debug, Serialize)]
 struct Account {
     name: String,
-    secret: String
+    secret: String,
+    issuer: String,
 }
 
 impl Account {
-    fn new(name: String, secret: String) -> Account {
+    fn new(name: String, secret: String, issuer: String) -> Account {
         Account {
             name,
-            secret
+            secret,
+            issuer,
         }
     }
 }
@@ -70,7 +72,11 @@ fn extract_from_uri(text: &str) -> Result<Vec<Account>, Box<dyn std::error::Erro
     let alphabet = base32::Alphabet::RFC4648 { padding: false };
 
     let payloads: Vec<Account> = otp_parameters.into_iter().map(
-        |p| Account::new(p.name, base32::encode(alphabet, p.secret.as_slice()))
+        |p| Account::new(
+            p.name,
+            base32::encode(alphabet, p.secret.as_slice()),
+            p.issuer
+        )
     ).collect();
 
     Ok(payloads)
