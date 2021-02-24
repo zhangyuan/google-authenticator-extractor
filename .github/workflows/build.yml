@@ -1,10 +1,6 @@
 name: Rust
 
-on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+on: [push, pull_request]
 
 env:
   CARGO_TERM_COLOR: always
@@ -16,6 +12,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - name: Install Protoc
+      uses: arduino/setup-protoc@v1
     - name: Build
       run: cargo build --verbose
     - name: Run tests
