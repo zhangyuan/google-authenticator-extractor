@@ -8,6 +8,8 @@ RUN apt-get update
 
 RUN apt install -y protobuf-compiler && protoc --version
 
+RUN apt-get -y build-essential
+
 COPY Cargo.toml Cargo.lock /app/
 
 RUN echo "fn main() {}" > dummy.rs && \
