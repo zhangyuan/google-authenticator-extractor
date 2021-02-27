@@ -6,9 +6,7 @@ WORKDIR /app
 
 RUN apt-get update
 
-RUN apt install -y protobuf-compiler && protoc --version
-
-RUN apt-get install -y build-essential
+RUN apt-get install -y protobuf-compiler build-essential mingw-w64
 
 COPY Cargo.toml Cargo.lock /app/
 
@@ -19,4 +17,4 @@ RUN echo "fn main() {}" > dummy.rs && \
 
 COPY . .
 
-RUN ./build.sh
+RUN ./build.sh && ./build.sh x86_64-pc-windows-gnu

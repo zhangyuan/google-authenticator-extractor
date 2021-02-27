@@ -1,7 +1,19 @@
 #! /bin/bash
 
-set -eou pipefail
+set -eo pipefail
 
-cargo clean
+TARGETS="$@"
 
-cargo build --release
+if [ -z "${TARGETS}" ]; then
+  echo "Build for the host system"
+  cargo build --release
+fi
+
+for TARGET in ${TARGETS}
+do
+  echo "Build for '${TARGET}'"
+  rustup target add "${TARGET}"
+  cargo build --release --target "${TARGET}"
+done
+
+
