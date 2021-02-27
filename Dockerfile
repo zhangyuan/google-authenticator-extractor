@@ -4,6 +4,8 @@ FROM rust:1.49.0-slim-buster
 
 WORKDIR /app
 
+RUN apt-get update
+
 RUN apt install -y protobuf-compiler && protoc --version
 
 COPY Cargo.toml Cargo.lock /app/
