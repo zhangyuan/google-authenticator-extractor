@@ -5,7 +5,7 @@ authors = ["Yuan Zhang <zhangyuan@users.noreply.github.com>"]
 edition = "2018"
 
 [[bin]]
-path = "src/main.rs"
+path = "dummy.rs"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
