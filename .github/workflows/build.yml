@@ -30,3 +30,12 @@ jobs:
       run: sudo apt install -y protobuf-compiler && protoc --version
     - name: Build
       run: cargo build --release
+
+  cross-build-ubuntu:
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install dependencies
+      run: ./ubuntu/install.sh
+    - name: Build
+      run: ./build.sh x86_64-pc-windows-gnu x86_64-unknown-linux-gnu

@@ -12,7 +12,6 @@ fi
 for TARGET in ${TARGETS}
 do
   echo "Build for '${TARGET}'"
-  rustup target add "${TARGET}"
   cargo build --release --target "${TARGET}"
 done
 
