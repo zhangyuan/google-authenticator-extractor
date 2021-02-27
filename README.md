@@ -1,5 +1,6 @@
 # Google Authenticator Extractor
 
+![Build](https://github.com/zhangyuan/google-authenticator-extractor/workflows/Build/badge.svg)
 ## What and Why
 
 This project aims at providing a single executable program to extract the OTP accounts from the QR code image exported from Google Authenticator, inspired by [extract_otp_secret_keys](https://github.com/scito/extract_otp_secret_keys) written in Python.
