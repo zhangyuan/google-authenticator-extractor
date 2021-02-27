@@ -8,7 +8,7 @@ RUN apt-get update
 
 RUN apt install -y protobuf-compiler && protoc --version
 
-RUN apt-get -y build-essential
+RUN apt-get install -y build-essential
 
 COPY Cargo.toml Cargo.lock /app/
 
