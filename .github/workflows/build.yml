@@ -20,7 +20,7 @@ jobs:
     - name: Install protobuf
       run: brew install protobuf && protoc --version
     - name: Build
-      run: cargo build --release
+      run: ./build.sh
 
   build-ubuntu:
     runs-on: ubuntu-20.04
@@ -29,7 +29,7 @@ jobs:
     - name: Install protobuf
       run: sudo apt install -y protobuf-compiler && protoc --version
     - name: Build
-      run: cargo build --release
+      run: ./build.sh
 
   cross-build-ubuntu:
     runs-on: ubuntu-20.04
