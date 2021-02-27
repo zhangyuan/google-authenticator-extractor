@@ -8,6 +8,9 @@ RUN apt-get update
 
 RUN apt-get install -y protobuf-compiler build-essential mingw-w64
 
+RUN rustup toolchain install stable-x86_64-unknown-linux-gnu && \
+ rustup toolchain install stable-x86_64-pc-windows-gnu
+
 COPY Cargo.toml Cargo.lock /app/
 
 RUN echo "fn main() {}" > dummy.rs && \
@@ -17,4 +20,4 @@ RUN echo "fn main() {}" > dummy.rs && \
 
 COPY . .
 
-RUN ./build.sh && ./build.sh x86_64-pc-windows-gnu
+RUN ./build.sh && ./build.sh x86_64-pc-windows-gnu x86_64-unknown-linux-gnu
