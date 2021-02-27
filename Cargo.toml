@@ -4,6 +4,9 @@ version = "0.0.1"
 authors = ["Yuan Zhang <zhangyuan@users.noreply.github.com>"]
 edition = "2018"
 
+[[bin]]
+path = "src/main.rs"
+
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
