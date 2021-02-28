@@ -11,9 +11,9 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Build
-      run: docker build .
+      run: docker build . -t google_authenticator_extractor
     - name: Test
-      run: ./test/command_test.sh
+      run: docker --rm run google_authenticator_extractor ./test/command_test.sh
 
   build-macos:
     runs-on: macos-10.15
