@@ -17,4 +17,4 @@ RUN echo "fn main() {}" > dummy.rs && \
 
 COPY . .
 
-RUN ./build.sh
+RUN ./scripts/build.sh
