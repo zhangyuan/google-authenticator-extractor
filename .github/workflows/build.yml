@@ -7,6 +7,7 @@ env:
 
 jobs:
   build-docker:
+    if: "!contains(github.event.head_commit.message, 'skip ci')"
     runs-on: ubuntu-18.04
     steps:
     - uses: actions/checkout@v2
@@ -16,6 +17,7 @@ jobs:
       run: docker run --rm google_authenticator_extractor ./test/command_test.sh
 
   build-macos:
+    if: "!contains(github.event.head_commit.message, 'skip ci')"
     runs-on: macos-10.15
     steps:
     - uses: actions/checkout@v2
@@ -31,6 +33,7 @@ jobs:
       run: CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_LINKER=x86_64-unknown-linux-gnu-gcc ./scripts/build.sh x86_64-unknown-linux-gnu
 
   build-ubuntu:
+    if: "!contains(github.event.head_commit.message, 'skip ci')"
     runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v2
