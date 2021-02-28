@@ -84,4 +84,4 @@ The Github actions defined steps cross compilation, which are running on CI as w
 * Build for `x86_64-unknown-linux-gnu` on Mac OSX.
 * Build for `x86_64-pc-windows-gnuu` on Ubuntu.
 
-Check the [Github Workflow](./github/workflows/build.yml) for more details.
+Check the [Github Workflow](./.github/workflows/build.yml) for more details.
