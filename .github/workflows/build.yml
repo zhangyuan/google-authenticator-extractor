@@ -27,6 +27,8 @@ jobs:
       run: ./test/command_test.sh
     - name: Build for x86_64-pc-windows-gnu
       run: ./scripts/build.sh x86_64-pc-windows-gnu
+    - name: Build for x86_64-unknown-linux-gnu
+      run: ./scripts/build.sh x86_64-unknown-linux-gnu
 
   build-ubuntu:
     runs-on: ubuntu-20.04
