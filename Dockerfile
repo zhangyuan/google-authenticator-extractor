@@ -1,6 +1,6 @@
-# syntax=docker/dockerfile:experimental
-
 FROM rust:1.49.0-slim-buster
+
+RUN rustup component add clippy
 
 WORKDIR /app
 
