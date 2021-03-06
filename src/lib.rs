@@ -1,15 +1,10 @@
-use base32;
-use base64;
 use protobuf::Message;
-use rqrr;
-use urlencoding;
 use std::path::{Path};
 use std::error::Error;
 use std::fmt::Formatter;
 use serde::Serialize;
 
 mod protos;
-
 #[derive(Debug, Serialize)]
 pub struct Account {
     name: String,
