@@ -2,6 +2,8 @@
 
 set -eo pipefail
 
+rustup component add clippy
+
 brew install protobuf
 
 # for target x86_64-pc-windows-gnu

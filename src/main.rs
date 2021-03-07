@@ -1,6 +1,5 @@
 use std::path::{PathBuf};
 use structopt::StructOpt;
-use serde_json;
 
 use google_authenticator_extractor::{
     Account,

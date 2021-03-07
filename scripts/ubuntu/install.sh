@@ -3,6 +3,8 @@
 
 set -eou pipefail
 
+rustup component add clippy
+
 sudo apt-get update
 sudo apt-get install -y protobuf-compiler build-essential mingw-w64
 
