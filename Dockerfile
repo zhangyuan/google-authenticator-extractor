@@ -10,9 +10,9 @@ RUN apt-get install -y protobuf-compiler
 
 COPY Cargo.toml Cargo.lock ./
 
-RUN echo "fn main() {}" > src/main.rs && \
+RUN mkdir -p src/ && echo "fn main() {}" > src/main.rs && \
   cargo build --release && \
-  rm src/main.rs
+  rm -rf src
 
 COPY . .
 
