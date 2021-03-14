@@ -1,0 +1,32 @@
+name: Build
+
+on:
+  push:
+    tags:
+      - '*'
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    runs-on: macos-10.15
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install dependencies
+      run: ./scripts/macosx/install.sh
+    - name: Build binaries
+      run: ./scripts/macosx/build.sh
+    - name: Test
+      run: ./test/command_test.sh
+    - name: Release
+      run: ./scripts/macosx/release.sh
+    - name: Upload Binaries
+      uses: svenstaro/upload-release-action@v2
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: 'release/google_authenticator_extractor*'
+        tag: ${{ github.ref }}
+        overwrite: true
+
+
