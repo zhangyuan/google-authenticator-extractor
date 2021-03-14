@@ -9,7 +9,7 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  build:
+  release:
     runs-on: macos-10.15
     steps:
     - uses: actions/checkout@v2
