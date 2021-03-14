@@ -8,12 +8,11 @@ RUN apt-get update
 
 RUN apt-get install -y protobuf-compiler
 
-COPY Cargo.toml Cargo.lock /app/
+COPY Cargo.toml Cargo.lock ./
 
-RUN echo "fn main() {}" > dummy.rs && \
-  sed -i 's#src/main.rs#dummy.rs#' Cargo.toml && \
+RUN mkdir -p src/ && echo "fn main() {}" > src/main.rs && \
   cargo build --release && \
-  sed -i 's#dummy.rs#src/main.rs#' Cargo.toml
+  rm -rf src
 
 COPY . .
 
