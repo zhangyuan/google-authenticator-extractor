@@ -1,6 +1,6 @@
 [package]
 name = "google_authenticator_extractor"
-version = "0.0.1"
+version = "0.1.0"
 authors = ["Yuan Zhang <zhangyuan@users.noreply.github.com>"]
 edition = "2018"
 
