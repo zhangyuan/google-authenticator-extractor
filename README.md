@@ -14,7 +14,9 @@ This project aims at providing a single executable program to extract the OTP ac
 
 ### Run the program to extract the accounts
 
-Download the execuable binary from [Releases](https://github.com/zhangyuan/google-authenticator-extractor/releases). Currently the executable binary is built for OSX only.
+Download the execuable binary from [Releases](https://github.com/zhangyuan/google-authenticator-extractor/releases), and run the executable binary with `-i` option.
+
+For example, download the executable binary `google_authenticator_extractor-x86_64-apple-darwin` for Mac OSX, and run the following command in terminal:
 
 ```bash
 chmod a+x google_authenticator_extractor-x86_64-apple-darwin
