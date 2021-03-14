@@ -25,8 +25,7 @@ jobs:
       uses: svenstaro/upload-release-action@v2
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: 'release/google_authenticator_extractor*'
+        file: 'releases/google_authenticator_extractor*'
         tag: ${{ github.ref }}
         overwrite: true
-
 
