@@ -26,7 +26,7 @@ chmod a+x google_authenticator_extractor-x86_64-apple-darwin
 The output looks like as below:
 
 ```json
-[{"name":"******","secret":"**********"},{"name":"*****","secret":"************"}]
+[{"name":"******","secret":"**********","issuer":"******"},{"name":"*****","secret":"************","issuer":""}]
 ```
 
 ## How to build from source
