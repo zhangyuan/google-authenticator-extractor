@@ -4,7 +4,7 @@ set -eo pipefail
 
 set -eo pipefail
 
-IMAGE="test/fixtures/migration.jpg"
+IMAGE="tests/fixtures/migration.jpg"
 
 actual=$(./target/release/google_authenticator_extractor -i ${IMAGE})
 
