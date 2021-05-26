@@ -1,14 +1,13 @@
-use std::path::{PathBuf};
+use std::path::PathBuf;
 use structopt::StructOpt;
 
-use google_authenticator_extractor::{
-    Account,
-    extract_from_uri,
-    extract_text_from_qrcode
-};
+use google_authenticator_extractor::{extract_from_uri, extract_text_from_qrcode, Account};
 
 #[derive(Debug, StructOpt)]
-#[structopt(name = "google-authenticator-extractor", about = "Extract information from the qrcode exported from google authenticator.")]
+#[structopt(
+    name = "google-authenticator-extractor",
+    about = "Extract information from the qrcode exported from google authenticator."
+)]
 struct Opt {
     #[structopt(short, parse(from_os_str))]
     image: PathBuf,
