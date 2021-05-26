@@ -1,8 +1,8 @@
 use protobuf::Message;
-use std::path::{Path};
+use serde::Serialize;
 use std::error::Error;
 use std::fmt::Formatter;
-use serde::Serialize;
+use std::path::Path;
 
 mod protos;
 #[derive(Debug, Serialize)]
@@ -23,7 +23,8 @@ impl Account {
 }
 
 pub fn extract_text_from_qrcode<P>(image_path: P) -> Result<String, Box<dyn std::error::Error>>
-where P: AsRef<Path>
+where
+    P: AsRef<Path>,
 {
     let image = image::open(image_path)?;
     let image = image.to_luma8();
@@ -33,8 +34,7 @@ where P: AsRef<Path>
     Ok(text)
 }
 
-pub fn extract_from_uri(text: &str) -> Result<Vec<Account>, Box<dyn std::error::Error>>
-{
+pub fn extract_from_uri(text: &str) -> Result<Vec<Account>, Box<dyn std::error::Error>> {
     let encoded_data = extract_data_from_uri(text)?;
     let data = base64::decode(encoded_data)?;
     let data_in_bytes = data.as_slice();
@@ -45,17 +45,19 @@ pub fn extract_from_uri(text: &str) -> Result<Vec<Account>, Box<dyn std::error::
 
     let alphabet = base32::Alphabet::RFC4648 { padding: false };
 
-    let payloads: Vec<Account> = otp_parameters.into_iter().map(
-        |p| Account::new(
-            p.name,
-            base32::encode(alphabet, p.secret.as_slice()),
-            p.issuer
-        )
-    ).collect();
+    let payloads: Vec<Account> = otp_parameters
+        .into_iter()
+        .map(|p| {
+            Account::new(
+                p.name,
+                base32::encode(alphabet, p.secret.as_slice()),
+                p.issuer,
+            )
+        })
+        .collect();
 
     Ok(payloads)
 }
-
 
 fn extract_data_from_uri(raw: &str) -> Result<String, Box<dyn std::error::Error>> {
     let mut split = raw.split("data=");
@@ -70,7 +72,7 @@ fn extract_data_from_uri(raw: &str) -> Result<String, Box<dyn std::error::Error>
 
 #[derive(Debug)]
 pub enum ExtractorError {
-    InvalidDataError
+    InvalidDataError,
 }
 
 impl Error for ExtractorError {}
@@ -78,7 +80,7 @@ impl Error for ExtractorError {}
 impl ::std::fmt::Display for ExtractorError {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         let msg = match self {
-            ExtractorError::InvalidDataError => "InvalidDataError(data from qrcode is invalid)"
+            ExtractorError::InvalidDataError => "InvalidDataError(data from qrcode is invalid)",
         };
         write!(f, "{}", msg)
     }
