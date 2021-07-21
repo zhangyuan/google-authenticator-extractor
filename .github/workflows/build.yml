@@ -1,5 +1,7 @@
 name: Build
 
+if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != 'zhangyuan/google-authenticator-extractor'
+
 on: [push, pull_request]
 
 env:
