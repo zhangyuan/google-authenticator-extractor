@@ -1,7 +1,5 @@
 name: Build
 
-if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != 'zhangyuan/google-authenticator-extractor'
-
 on: [push, pull_request]
 
 env:
@@ -10,6 +8,7 @@ env:
 jobs:
   build-docker:
     runs-on: ubuntu-18.04
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != 'zhangyuan/google-authenticator-extractor'
     steps:
     - uses: actions/checkout@v2
     - name: Build
@@ -19,6 +18,7 @@ jobs:
 
   build-macos:
     runs-on: macos-10.15
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != 'zhangyuan/google-authenticator-extractor'
     steps:
     - uses: actions/checkout@v2
     - name: Install dependencies
@@ -32,6 +32,7 @@ jobs:
 
   build-ubuntu:
     runs-on: ubuntu-20.04
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != 'zhangyuan/google-authenticator-extractor'
     steps:
     - uses: actions/checkout@v2
     - name: Install dependencies
