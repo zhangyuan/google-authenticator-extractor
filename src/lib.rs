@@ -63,8 +63,8 @@ fn extract_data_from_uri(raw: &str) -> Result<String, Box<dyn std::error::Error>
     let mut split = raw.split("data=");
     split.next();
     if let Some(encoded_data) = split.next() {
-        let x = urlencoding::decode(encoded_data)?;
-        Ok(x)
+        let s = urlencoding::decode(encoded_data)?;
+        Ok(s.to_string())
     } else {
         Err(Box::new(ExtractorError::InvalidDataError))
     }
