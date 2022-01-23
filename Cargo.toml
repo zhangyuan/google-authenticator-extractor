@@ -8,7 +8,7 @@ edition = "2018"
 
 [dependencies]
 image = "0.23"
-rqrr = { version = "0.3.1" }
+rqrr = { version = "0.4.0" }
 protobuf = { version = "2.0" }
 base64 = "0.13.0"
 urlencoding = "2.1.0"
