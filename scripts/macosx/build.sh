@@ -1,6 +1,6 @@
 #! /bin/bash
 
-set -e
+set -eo pipefail
 
 echo "Build for default target"
 ./scripts/build.sh
