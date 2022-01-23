@@ -16,5 +16,3 @@ do
   echo "Build for '${TARGET}'"
   cargo build --release --target "${TARGET}"
 done
-
-

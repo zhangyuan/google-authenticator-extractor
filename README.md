@@ -64,20 +64,6 @@ Build the project:
 ./build.sh
 ```
 
-### With Docker
-
-Build the docker image with the `Dockerfile`:
-
-```bash
-docker build . -t google_authenticator_extractor
-```
-
-Run the docker image and with command `bash`, then you'll be in the docker container.
-
-```
-docker run -v ./:/app --rm -it google_authenticator_extractor bash
-```
-
 ### Cross Compilation
 
 The Github actions defined steps cross compilation, which are running on CI as well. Currently the following cross compilations are supported.

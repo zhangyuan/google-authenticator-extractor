@@ -18,7 +18,7 @@ jobs:
     - name: Build binaries
       run: ./scripts/macosx/build.sh
     - name: Test
-      run: ./tests/command_test.sh
+      run: cargo test
     - name: Release
       run: ./scripts/macosx/release.sh
     - name: Upload Binaries
@@ -29,5 +29,3 @@ jobs:
         tag: ${{ github.ref }}
         overwrite: true
         file_glob: true
-
-

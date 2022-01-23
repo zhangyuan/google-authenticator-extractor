@@ -6,27 +6,23 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  build-docker:
-    runs-on: ubuntu-18.04
-    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != 'zhangyuan/google-authenticator-extractor'
-    steps:
-    - uses: actions/checkout@v2
-    - name: Build
-      run: docker build . -t google_authenticator_extractor
-    - name: Test
-      run: docker run --rm google_authenticator_extractor ./tests/command_test.sh
-
   build-macos:
     runs-on: macos-10.15
     if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != 'zhangyuan/google-authenticator-extractor'
     steps:
     - uses: actions/checkout@v2
+    - uses: actions-rs/toolchain@v1
+      with:
+        profile: minimal
+        toolchain: stable
+        components: rustfmt, clippy
+    - uses: Swatinem/rust-cache@v1
     - name: Install dependencies
       run: ./scripts/macosx/install.sh
     - name: Build
       run: ./scripts/macosx/build.sh
     - name: Test
-      run: ./tests/command_test.sh
+      run: cargo test
     - name: Release
       run: ./scripts/macosx/release.sh
 
@@ -35,10 +31,15 @@ jobs:
     if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != 'zhangyuan/google-authenticator-extractor'
     steps:
     - uses: actions/checkout@v2
+    - uses: actions-rs/toolchain@v1
+      with:
+        profile: minimal
+        toolchain: stable
+        components: rustfmt, clippy
+    - uses: Swatinem/rust-cache@v1
     - name: Install dependencies
       run: ./scripts/ubuntu/install.sh
     - name: Build
       run: ./scripts/ubuntu/build.sh
     - name: Test
-      run: ./tests/command_test.sh
-
+      run: cargo test

@@ -16,3 +16,6 @@ brew tap SergioBenitez/osxct
 brew install x86_64-unknown-linux-gnu
 rustup toolchain install stable-x86_64-unknown-linux-gnu
 rustup target add x86_64-unknown-linux-gnu
+
+# to compress executables
+brew install upx
