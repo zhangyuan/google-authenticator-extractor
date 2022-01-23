@@ -13,7 +13,12 @@ CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_LINKER=x86_64-unknown-linux-gnu-gcc ./scri
 
 mv target/release/google_authenticator_extractor \
   releases/google_authenticator_extractor-x86_64-apple-darwin
+upx releases/google_authenticator_extractor-x86_64-apple-darwin
+
 mv target/x86_64-pc-windows-gnu/release/google_authenticator_extractor.exe \
   releases/google_authenticator_extractor-x86_64-pc-windows-gnu.exe
+upx releases/google_authenticator_extractor-x86_64-pc-windows-gnu.exe
+
 mv target/x86_64-unknown-linux-gnu/release/google_authenticator_extractor \
   releases/google_authenticator_extractor-x86_64-unknown-linux-gnu
+upx releases/google_authenticator_extractor-x86_64-unknown-linux-gnu
