@@ -26,7 +26,7 @@ jobs:
     - name: Build
       run: ./scripts/macosx/build.sh
     - name: Test
-      run: ./tests/command_test.sh
+      run: cargo test
     - name: Release
       run: ./scripts/macosx/release.sh
 
@@ -40,5 +40,4 @@ jobs:
     - name: Build
       run: ./scripts/ubuntu/build.sh
     - name: Test
-      run: ./tests/command_test.sh
-
+      run: cargo test
