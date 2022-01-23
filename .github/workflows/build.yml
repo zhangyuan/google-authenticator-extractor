@@ -31,6 +31,12 @@ jobs:
     if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != 'zhangyuan/google-authenticator-extractor'
     steps:
     - uses: actions/checkout@v2
+    - uses: actions-rs/toolchain@v1
+      with:
+        profile: minimal
+        toolchain: stable
+        components: rustfmt, clippy
+    - uses: Swatinem/rust-cache@v1
     - name: Install dependencies
       run: ./scripts/ubuntu/install.sh
     - name: Build
