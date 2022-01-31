@@ -18,7 +18,7 @@ serde_json = { version = "1"}
 serde = {version = "1", features = ["derive"] }
 
 [build-dependencies]
-protoc-rust = "2.25"
+protoc-rust = "2.26"
 
 [dev-dependencies]
 assert_cmd = "2.0.4"
