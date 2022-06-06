@@ -346,7 +346,7 @@ dependencies = [
  "base32",
  "base64",
  "image",
- "protobuf",
+ "protobuf 3.0.3",
  "protoc-rust",
  "rqrr",
  "serde",
@@ -718,12 +718,32 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cf7e6d18738ecd0902d30d1ad232c9125985a3422929b16c65517b38adc14f96"
 
 [[package]]
+name = "protobuf"
+version = "3.0.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5d644aefa452a3188ce8fd92e71944ad082feca2016eb41d4b9c55ceba9e5f38"
+dependencies = [
+ "once_cell",
+ "protobuf-support",
+ "thiserror",
+]
+
+[[package]]
 name = "protobuf-codegen"
 version = "2.27.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "aec1632b7c8f2e620343439a7dfd1f3c47b18906c4be58982079911482b5d707"
 dependencies = [
- "protobuf",
+ "protobuf 2.27.1",
+]
+
+[[package]]
+name = "protobuf-support"
+version = "3.0.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f737edf903b494f760e5cdf2e16d904f5dd36206a14afa84654688f422c950eb"
+dependencies = [
+ "thiserror",
 ]
 
 [[package]]
@@ -742,7 +762,7 @@ version = "2.27.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1a9e315121c8e7e21396e940a3d27f92280a6d28e3931213bf6cbfea76c5cc94"
 dependencies = [
- "protobuf",
+ "protobuf 2.27.1",
  "protobuf-codegen",
  "protoc",
  "tempfile",
@@ -969,6 +989,26 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d326610f408c7a4eb6f51c37c330e496b08506c9457c9d34287ecc38809fb060"
 dependencies = [
  "unicode-width",
+]
+
+[[package]]
+name = "thiserror"
+version = "1.0.31"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bd829fe32373d27f76265620b5309d0340cb8550f523c1dda251d6298069069a"
+dependencies = [
+ "thiserror-impl",
+]
+
+[[package]]
+name = "thiserror-impl"
+version = "1.0.31"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0396bc89e626244658bef819e22d0cc459e795a5ebe878e6ec336d1674a8d79a"
+dependencies = [
+ "proc-macro2 1.0.36",
+ "quote 1.0.15",
+ "syn 1.0.86",
 ]
 
 [[package]]
