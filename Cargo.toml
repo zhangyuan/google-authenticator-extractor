@@ -8,17 +8,17 @@ edition = "2018"
 
 [dependencies]
 image = "0.24"
-rqrr = { version = "0.5.0" }
-protobuf = { version = "2.0" }
-base64 = "0.13.0"
-urlencoding = "2.1.0"
-base32 = "0.4.0"
+rqrr = { version = "0.5" }
+protobuf = { version = "2" }
+base64 = "0.13"
+urlencoding = "2"
+base32 = "0.4"
 structopt = { version = "0.3"}
 serde_json = { version = "1"}
 serde = {version = "1", features = ["derive"] }
 
 [build-dependencies]
-protoc-rust = "2.25"
+protoc-rust = "2"
 
 [dev-dependencies]
-assert_cmd = "2.0.4"
+assert_cmd = "2"
