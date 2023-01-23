@@ -10,7 +10,7 @@ edition = "2018"
 image = "0.24"
 rqrr = { version = "0.5" }
 protobuf = { version = "2" }
-base64 = "0.13"
+base64 = "0.21"
 urlencoding = "2"
 base32 = "0.4"
 structopt = { version = "0.3"}
