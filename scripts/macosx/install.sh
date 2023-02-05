@@ -2,10 +2,6 @@
 
 set -eo pipefail
 
-rustup component add clippy
-
-brew install protobuf
-
 # for target x86_64-pc-windows-gnu
 brew install mingw-w64
 rustup toolchain install stable-x86_64-pc-windows-gnu

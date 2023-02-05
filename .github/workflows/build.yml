@@ -11,6 +11,10 @@ jobs:
     if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != 'zhangyuan/google-authenticator-extractor'
     steps:
     - uses: actions/checkout@v2
+    - name: Install Protoc
+      uses: arduino/setup-protoc@v1
+      with:
+        version: '3.x'
     - uses: actions-rs/toolchain@v1
       with:
         profile: minimal
@@ -31,6 +35,10 @@ jobs:
     if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != 'zhangyuan/google-authenticator-extractor'
     steps:
     - uses: actions/checkout@v2
+    - name: Install Protoc
+      uses: arduino/setup-protoc@v1
+      with:
+        version: '3.x'
     - uses: actions-rs/toolchain@v1
       with:
         profile: minimal

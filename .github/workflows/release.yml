@@ -13,6 +13,10 @@ jobs:
     runs-on: macos-10.15
     steps:
     - uses: actions/checkout@v2
+    - name: Install Protoc
+      uses: arduino/setup-protoc@v1
+      with:
+        version: '3.x'
     - name: Install dependencies
       run: ./scripts/macosx/install.sh
     - name: Build binaries
