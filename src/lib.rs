@@ -1,3 +1,5 @@
+use base64::{Engine as _, engine::general_purpose};
+
 use protobuf::Message;
 use serde::Serialize;
 use std::error::Error;
@@ -36,7 +38,7 @@ where
 
 pub fn extract_from_uri(text: &str) -> Result<Vec<Account>, Box<dyn std::error::Error>> {
     let encoded_data = extract_data_from_uri(text)?;
-    let data = base64::decode(encoded_data)?;
+    let data = general_purpose::STANDARD.decode(encoded_data)?;
     let data_in_bytes = data.as_slice();
 
     let migration_payload = protos::google_auth::MigrationPayload::parse_from_bytes(data_in_bytes)?;
