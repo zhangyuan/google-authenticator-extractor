@@ -84,6 +84,6 @@ impl ::std::fmt::Display for ExtractorError {
         let msg = match self {
             ExtractorError::InvalidDataError => "InvalidDataError(data from qrcode is invalid)",
         };
-        write!(f, "{}", msg)
+        write!(f, "{msg}")
     }
 }
