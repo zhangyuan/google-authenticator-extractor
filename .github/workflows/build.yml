@@ -16,7 +16,7 @@ jobs:
         profile: minimal
         toolchain: stable
         components: rustfmt, clippy
-    - uses: Swatinem/rust-cache@v1
+    - uses: Swatinem/rust-cache@v2
     - name: Install dependencies
       run: ./scripts/macosx/install.sh
     - name: Build
@@ -36,7 +36,7 @@ jobs:
         profile: minimal
         toolchain: stable
         components: rustfmt, clippy
-    - uses: Swatinem/rust-cache@v1
+    - uses: Swatinem/rust-cache@v2
     - name: Install dependencies
       run: ./scripts/ubuntu/install.sh
     - name: Build
