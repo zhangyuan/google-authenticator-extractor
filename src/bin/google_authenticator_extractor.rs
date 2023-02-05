@@ -20,7 +20,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let x = serde_json::to_string(&accounts)?;
 
-    println!("{}", x);
+    println!("{x}");
 
     Ok(())
 }
