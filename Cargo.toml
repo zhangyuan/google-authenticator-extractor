@@ -9,7 +9,7 @@ edition = "2021"
 [dependencies]
 image = "0.24"
 rqrr = { version = "0.6" }
-protobuf = { version = "2" }
+protobuf = { version = "3" }
 base64 = "0.21"
 urlencoding = "2"
 base32 = "0.4"
