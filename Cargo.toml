@@ -18,7 +18,7 @@ serde_json = { version = "1"}
 serde = {version = "1", features = ["derive"] }
 
 [build-dependencies]
-protobuf-codegen = "3.0.0-alpha.2"
+protobuf-codegen = "3.0"
 
 [dev-dependencies]
 assert_cmd = "2"
