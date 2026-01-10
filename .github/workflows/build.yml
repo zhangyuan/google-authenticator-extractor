@@ -1,45 +1,63 @@
 name: Build
 
-on: [push, pull_request]
+on:
+  push:
+    branches: [ main ]
+    tags: ['v*']
+  pull_request:
 
 env:
   CARGO_TERM_COLOR: always
+  BINARY_NAME: google_authenticator_extractor
 
 jobs:
-  build-macos:
-    runs-on: macos-latest
-    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != 'zhangyuan/google-authenticator-extractor'
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, ubuntu-24.04-arm, windows-11-arm, windows-latest, macos-15-intel, macos-latest]
+    runs-on: ${{ matrix.os }}
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions-rs/toolchain@v1
-      with:
-        profile: minimal
-        toolchain: stable
-        components: rustfmt, clippy
-    - uses: Swatinem/rust-cache@v2
-    - name: Install dependencies
-      run: ./scripts/macosx/install.sh
-    - name: Build
-      run: ./scripts/macosx/build.sh
-    - name: Test
-      run: cargo test
-    - name: Release
-      run: ./scripts/macosx/release.sh
-
-  build-ubuntu:
-    runs-on: ubuntu-latest
-    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != 'zhangyuan/google-authenticator-extractor'
-    steps:
-    - uses: actions/checkout@v2
-    - uses: actions-rs/toolchain@v1
-      with:
-        profile: minimal
-        toolchain: stable
-        components: rustfmt, clippy
-    - uses: Swatinem/rust-cache@v2
-    - name: Install dependencies
-      run: ./scripts/ubuntu/install.sh
-    - name: Build
-      run: ./scripts/ubuntu/build.sh
-    - name: Test
-      run: cargo test
+      - uses: actions/checkout@v5
+      - name: Cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+      - name: Build (release)
+        run: cargo build --release
+      - name: Run tests
+        run: cargo test
+      - name: Determine artifact name
+        id: meta
+        run: |
+          set -e
+          case "${{ runner.os }}" in
+            Windows*) EXT=.exe ; ARCH=$(echo $PROCESSOR_ARCHITECTURE || echo unknown) ;;
+            *) EXT= ; ARCH=$(uname -m) ;;
+          esac
+          echo "ext=$EXT" >> $GITHUB_OUTPUT
+          echo "arch=$ARCH" >> $GITHUB_OUTPUT
+          echo "os=${{ matrix.os }}" >> $GITHUB_OUTPUT
+      - name: Package binary
+        run: |
+          set -e
+          BIN_NAME="${BINARY_NAME}${{ steps.meta.outputs.ext }}"
+          SRC=target/release/${BIN_NAME}
+          mkdir -p dist
+          if [ "${{ matrix.os }}" = "windows-latest" ]; then
+            powershell -Command "Copy-Item -Path $Env:RUNNER_WORKSPACE\${{ github.repository }}\target\release\${BIN_NAME} -Destination dist -ErrorAction SilentlyContinue"
+            pushd dist
+            powershell -Command "Compress-Archive -Path ${BIN_NAME} -DestinationPath ${BIN_NAME%.*}-${{ steps.meta.outputs.os }}-${{ steps.meta.outputs.arch }}.zip -Force"
+            popd
+          else
+            cp "$SRC" dist/
+            tar -czf "dist/${BIN_NAME}-${{ steps.meta.outputs.os }}-${{ steps.meta.outputs.arch }}.tar.gz" -C dist "$BIN_NAME" || true
+          fi
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.os }}-${{ steps.meta.outputs.arch }}
+          path: dist/*
