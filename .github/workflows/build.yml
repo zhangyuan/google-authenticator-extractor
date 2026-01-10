@@ -62,7 +62,7 @@ jobs:
         run: |
           $ErrorActionPreference = 'Stop'
           $bin = "${{ env.BINARY_NAME }}${{ steps.meta.outputs.ext }}"
-          $src = Join-Path $PSScriptRoot "target\release\$bin"
+          $src = "target\release\$bin"
           New-Item -ItemType Directory -Path dist -Force | Out-Null
           Copy-Item -Path $src -Destination dist
           $base = [IO.Path]::GetFileNameWithoutExtension($bin)
