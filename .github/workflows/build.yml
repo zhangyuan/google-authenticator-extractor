@@ -36,6 +36,7 @@ jobs:
         run: cargo test
       - name: Determine artifact name
         id: meta
+        shell: bash
         run: |
           set -e
           case "${{ runner.os }}" in
@@ -52,8 +53,8 @@ jobs:
           BIN_NAME="${BINARY_NAME}${{ steps.meta.outputs.ext }}"
           SRC=target/release/${BIN_NAME}
           mkdir -p dist
-          cp "${SRC}" "dist/${BIN_NAME}-${{ steps.meta.outputs.os }}-${{ steps.meta.outputs.arch }}" || true
-          chmod +x "dist/${BIN_NAME}-${{ steps.meta.outputs.os }}-${{ steps.meta.outputs.arch }}" || true
+          cp "${SRC}" "dist/${BIN_NAME}-${{ steps.meta.outputs.os }}-${{ steps.meta.outputs.arch }}"
+          chmod +x "dist/${BIN_NAME}-${{ steps.meta.outputs.os }}-${{ steps.meta.outputs.arch }}"
 
       - name: Package binary (windows)
         if: runner.os == 'Windows'
@@ -70,7 +71,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.os }}-${{ steps.meta.outputs.arch }}
+          name: ${{ env.BINARY_NAME }}-${{ matrix.os }}-${{ steps.meta.outputs.arch }}
           path: dist/*
 
   publish:
