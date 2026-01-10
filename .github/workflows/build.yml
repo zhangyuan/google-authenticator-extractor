@@ -1,45 +1,99 @@
 name: Build
 
-on: [push, pull_request]
+on:
+  push:
+    branches: [ main ]
+    tags: ['v*']
+  pull_request:
 
 env:
   CARGO_TERM_COLOR: always
+  BINARY_NAME: google_authenticator_extractor
 
 jobs:
-  build-macos:
-    runs-on: macos-latest
-    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != 'zhangyuan/google-authenticator-extractor'
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, ubuntu-24.04-arm, windows-11-arm, windows-latest, macos-15-intel, macos-latest]
+    runs-on: ${{ matrix.os }}
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions-rs/toolchain@v1
-      with:
-        profile: minimal
-        toolchain: stable
-        components: rustfmt, clippy
-    - uses: Swatinem/rust-cache@v2
-    - name: Install dependencies
-      run: ./scripts/macosx/install.sh
-    - name: Build
-      run: ./scripts/macosx/build.sh
-    - name: Test
-      run: cargo test
-    - name: Release
-      run: ./scripts/macosx/release.sh
+      - uses: actions/checkout@v5
+      - name: Cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v3
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build (release)
+        run: cargo build --release
+      - name: Run tests
+        run: cargo test
+      - name: Determine artifact name
+        id: meta
+        shell: bash
+        run: |
+          set -e
+          case "${{ runner.os }}" in
+            Windows*) EXT=.exe ;;
+            *) EXT= ;;
+          esac
+          
+          # Determine arch from matrix.os for accuracy
+          case "${{ matrix.os }}" in
+            *-arm) ARCH=arm64 ;;
+            *) ARCH=$(uname -m || echo x86_64) ;;
+          esac
+          
+          echo "ext=$EXT" >> $GITHUB_OUTPUT
+          echo "arch=$ARCH" >> $GITHUB_OUTPUT
+          echo "os=${{ matrix.os }}" >> $GITHUB_OUTPUT
+      - name: Package binary (posix)
+        if: runner.os != 'Windows'
+        run: |
+          set -e
+          BIN_NAME="${BINARY_NAME}${{ steps.meta.outputs.ext }}"
+          SRC=target/release/${BIN_NAME}
+          mkdir -p dist
+          cp "${SRC}" "dist/${BIN_NAME}-${{ steps.meta.outputs.os }}-${{ steps.meta.outputs.arch }}"
+          chmod +x "dist/${BIN_NAME}-${{ steps.meta.outputs.os }}-${{ steps.meta.outputs.arch }}"
 
-  build-ubuntu:
+      - name: Package binary (windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $bin = "${{ env.BINARY_NAME }}.exe"
+          $src = "target\release\$bin"
+          New-Item -ItemType Directory -Path dist -Force | Out-Null
+          Copy-Item -Path $src -Destination dist
+          $newName = "${{ env.BINARY_NAME }}-${{ steps.meta.outputs.os }}-${{ steps.meta.outputs.arch }}.exe"
+          Rename-Item -Path (Join-Path dist $bin) -NewName $newName -Force
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.BINARY_NAME }}-${{ matrix.os }}-${{ steps.meta.outputs.arch }}
+          path: dist/*
+
+  publish:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != 'zhangyuan/google-authenticator-extractor'
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions-rs/toolchain@v1
-      with:
-        profile: minimal
-        toolchain: stable
-        components: rustfmt, clippy
-    - uses: Swatinem/rust-cache@v2
-    - name: Install dependencies
-      run: ./scripts/ubuntu/install.sh
-    - name: Build
-      run: ./scripts/ubuntu/build.sh
-    - name: Test
-      run: cargo test
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: dist
+      - name: Create GitHub Release and upload assets
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ github.ref_name }}
+          file: dist/**
+          overwrite: true
+          file_glob: true
