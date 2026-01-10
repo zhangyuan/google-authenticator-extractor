@@ -35,41 +35,6 @@ The output looks like as below:
 
 > Rust is the programming language of the project, Install Rust by following the instructions in the [official doument](https://www.rust-lang.org/tools/install).
 
-### On Mac OS X
-
-Install protobuf with Homebrew:
-
 ```bash
-brew install protobuf
+cargo bulid
 ```
-
-Build the project
-
-```bash
-./build.sh
-```
-
-### On Ubuntu
-
-Install protobuf with `apt-get`:
-
-```bash
-sudo apt-get update
-sudo apt-get install -y protobuf-compiler
-```
-
-Build the project:
-
-```bash
-./build.sh
-```
-
-### Cross Compilation
-
-The Github actions defined steps cross compilation, which are running on CI as well. Currently the following cross compilations are supported.
-
-* Build for `x86_64-pc-windows-gnu` on Mac OSX.
-* Build for `x86_64-unknown-linux-gnu` on Mac OSX.
-* Build for `x86_64-pc-windows-gnuu` on Ubuntu.
-
-Check the [Github Workflow](./.github/workflows/build.yml) for more details.
