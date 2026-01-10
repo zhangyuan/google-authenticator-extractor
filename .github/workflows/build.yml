@@ -61,13 +61,12 @@ jobs:
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
-          $bin = "${{ env.BINARY_NAME }}${{ steps.meta.outputs.ext }}"
+          $bin = "${{ env.BINARY_NAME }}.exe"
           $src = "target\release\$bin"
           New-Item -ItemType Directory -Path dist -Force | Out-Null
           Copy-Item -Path $src -Destination dist
-          $base = [IO.Path]::GetFileNameWithoutExtension($bin)
-          $newName = "$($base)-${{ steps.meta.outputs.os }}-${{ steps.meta.outputs.arch }}.exe"
-          if (Test-Path (Join-Path dist $bin)) { Rename-Item -Path (Join-Path dist $bin) -NewName $newName -Force }
+          $newName = "${{ env.BINARY_NAME }}-${{ steps.meta.outputs.os }}-${{ steps.meta.outputs.arch }}.exe"
+          Rename-Item -Path (Join-Path dist $bin) -NewName $newName -Force
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
