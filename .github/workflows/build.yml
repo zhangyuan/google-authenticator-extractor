@@ -40,9 +40,16 @@ jobs:
         run: |
           set -e
           case "${{ runner.os }}" in
-            Windows*) EXT=.exe ; ARCH=$(echo $PROCESSOR_ARCHITECTURE || echo unknown) ;;
-            *) EXT= ; ARCH=$(uname -m) ;;
+            Windows*) EXT=.exe ;;
+            *) EXT= ;;
           esac
+          
+          # Determine arch from matrix.os for accuracy
+          case "${{ matrix.os }}" in
+            *-arm) ARCH=arm64 ;;
+            *) ARCH=$(uname -m || echo x86_64) ;;
+          esac
+          
           echo "ext=$EXT" >> $GITHUB_OUTPUT
           echo "arch=$ARCH" >> $GITHUB_OUTPUT
           echo "os=${{ matrix.os }}" >> $GITHUB_OUTPUT
