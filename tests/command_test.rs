@@ -1,10 +1,10 @@
 use std::path::PathBuf;
 
-use assert_cmd::Command;
+use assert_cmd::cargo::cargo_bin_cmd;
 
 #[test]
 fn runs() {
-    let mut cmd = Command::cargo_bin("google_authenticator_extractor").unwrap();
+    let mut cmd = cargo_bin_cmd!("google_authenticator_extractor");
 
     let mut d = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     d.push("tests/fixtures/migration.jpg");

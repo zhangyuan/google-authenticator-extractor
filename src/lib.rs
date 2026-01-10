@@ -43,9 +43,9 @@ pub fn extract_from_uri(text: &str) -> Result<Vec<Account>, Box<dyn std::error::
 
     let migration_payload = protos::google_auth::MigrationPayload::parse_from_bytes(data_in_bytes)?;
 
-    let otp_parameters = migration_payload.otp_parameters.into_vec();
+    let otp_parameters = migration_payload.otp_parameters.to_vec();
 
-    let alphabet = base32::Alphabet::RFC4648 { padding: false };
+    let alphabet = base32::Alphabet::Rfc4648 { padding: false };
 
     let payloads: Vec<Account> = otp_parameters
         .into_iter()

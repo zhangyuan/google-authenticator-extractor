@@ -2,23 +2,23 @@
 name = "google_authenticator_extractor"
 version = "0.1.0"
 authors = ["Yuan Zhang <zhangyuan@users.noreply.github.com>"]
-edition = "2021"
+edition = "2024"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-image = "0.24"
-rqrr = { version = "0.6" }
-protobuf = { version = "2" }
-base64 = "0.21"
+image = "0.25"
+rqrr = { version = "0.10" }
+protobuf = { version = "3" }
+base64 = "0.22"
 urlencoding = "2"
-base32 = "0.4"
+base32 = "0.5"
 structopt = { version = "0.3"}
 serde_json = { version = "1"}
 serde = {version = "1", features = ["derive"] }
 
 [build-dependencies]
-protoc-rust = "2"
+protobuf-codegen = "3.0.0-alpha.2"
 
 [dev-dependencies]
 assert_cmd = "2"
