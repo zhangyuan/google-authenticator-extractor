@@ -45,21 +45,28 @@ jobs:
           echo "ext=$EXT" >> $GITHUB_OUTPUT
           echo "arch=$ARCH" >> $GITHUB_OUTPUT
           echo "os=${{ matrix.os }}" >> $GITHUB_OUTPUT
-      - name: Package binary
+      - name: Package binary (posix)
+        if: runner.os != 'Windows'
         run: |
           set -e
           BIN_NAME="${BINARY_NAME}${{ steps.meta.outputs.ext }}"
           SRC=target/release/${BIN_NAME}
           mkdir -p dist
-          if [ "${{ matrix.os }}" = "windows-latest" ]; then
-            powershell -Command "Copy-Item -Path $Env:RUNNER_WORKSPACE\${{ github.repository }}\target\release\${BIN_NAME} -Destination dist -ErrorAction SilentlyContinue"
-            pushd dist
-            powershell -Command "Compress-Archive -Path ${BIN_NAME} -DestinationPath ${BIN_NAME%.*}-${{ steps.meta.outputs.os }}-${{ steps.meta.outputs.arch }}.zip -Force"
-            popd
-          else
-            cp "$SRC" dist/
-            tar -czf "dist/${BIN_NAME}-${{ steps.meta.outputs.os }}-${{ steps.meta.outputs.arch }}.tar.gz" -C dist "$BIN_NAME" || true
-          fi
+          cp "${SRC}" "dist/${BIN_NAME}-${{ steps.meta.outputs.os }}-${{ steps.meta.outputs.arch }}" || true
+          chmod +x "dist/${BIN_NAME}-${{ steps.meta.outputs.os }}-${{ steps.meta.outputs.arch }}" || true
+
+      - name: Package binary (windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $bin = "${{ env.BINARY_NAME }}${{ steps.meta.outputs.ext }}"
+          $src = Join-Path $PSScriptRoot "target\release\$bin"
+          New-Item -ItemType Directory -Path dist -Force | Out-Null
+          Copy-Item -Path $src -Destination dist
+          $base = [IO.Path]::GetFileNameWithoutExtension($bin)
+          $newName = "$($base)-${{ steps.meta.outputs.os }}-${{ steps.meta.outputs.arch }}.exe"
+          if (Test-Path (Join-Path dist $bin)) { Rename-Item -Path (Join-Path dist $bin) -NewName $newName -Force }
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
