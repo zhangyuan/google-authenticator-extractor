@@ -8,7 +8,7 @@ edition = "2024"
 
 [dependencies]
 image = "0.25"
-rqrr = { version = "0.10" }
+rqrr = { version = "0.11" }
 protobuf = { version = "3" }
 base64 = "0.22"
 urlencoding = "2"
