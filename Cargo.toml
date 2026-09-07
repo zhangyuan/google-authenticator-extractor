@@ -10,7 +10,7 @@ edition = "2024"
 image = "0.25"
 rqrr = { version = "0.10" }
 protobuf = { version = "3" }
-base64 = "0.22"
+base64 = "0.23"
 urlencoding = "2"
 base32 = "0.5"
 structopt = { version = "0.3"}
