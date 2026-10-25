@@ -1,3 +1,5 @@
+
+
 # Google Authenticator Extractor
 
 [![Build](https://github.com/zhangyuan/google-authenticator-extractor/workflows/Build/badge.svg)](https://github.com/zhangyuan/google-authenticator-extractor/actions/workflows/build.yml)
@@ -14,7 +16,7 @@ This project aims at providing a single executable program to extract the OTP ac
 
 ### Run the program to extract the accounts
 
-Download the execuable binary from [Releases](https://github.com/zhangyuan/google-authenticator-extractor/releases), and run the executable binary with `-i` option.
+Download the executable binary from [Releases](https://github.com/zhangyuan/google-authenticator-extractor/releases), and run the executable binary with `-i` option.
 
 For example, download the executable binary `google_authenticator_extractor-x86_64-apple-darwin` for Mac OSX, and run the following command in terminal:
 
@@ -33,8 +35,8 @@ The output looks like as below:
 
 ## How to build from source
 
-> Rust is the programming language of the project, Install Rust by following the instructions in the [official doument](https://www.rust-lang.org/tools/install).
+> Rust is the programming language of the project. Install Rust by following the instructions in the [official document](https://www.rust-lang.org/tools/install).
 
 ```bash
-cargo bulid
+cargo build
 ```
