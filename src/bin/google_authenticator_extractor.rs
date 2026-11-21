@@ -1,14 +1,14 @@
 use std::error::Error;
 use std::path::{Path, PathBuf};
 
-use structopt::StructOpt;
+use clap::Parser;
 
 use google_authenticator_extractor::{
     Account, extract_batch_from_uri, extract_text_from_qrcode, merge_batches, missing_batch_indexes,
 };
 
-#[derive(Debug, StructOpt)]
-#[structopt(
+#[derive(Debug, Parser)]
+#[command(
     name = "google-authenticator-extractor",
     about = "Extract information from the qrcode exported from google authenticator."
 )]
@@ -16,7 +16,7 @@ struct Opt {
     /// One or more QR code images (or directories) exported from Google
     /// Authenticator. Pass every image of a multi-QR export to get all
     /// accounts.
-    #[structopt(short, long, parse(from_os_str), required = true, min_values = 1)]
+    #[arg(short, long, required = true, num_args = 1..)]
     image: Vec<PathBuf>,
 }
 
@@ -28,7 +28,7 @@ fn main() {
 }
 
 fn run() -> Result<(), Box<dyn Error>> {
-    let opt = Opt::from_args();
+    let opt = Opt::parse();
     let paths = expand_paths(&opt.image)?;
 
     let mut batches = Vec::new();

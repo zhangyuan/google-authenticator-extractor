@@ -7,13 +7,13 @@ edition = "2024"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-image = "0.25"
+image = { version = "0.25", default-features = false, features = ["bmp", "gif", "jpeg", "png", "tiff", "webp"] }
 rqrr = { version = "0.11" }
 protobuf = { version = "3" }
 base64 = "0.23"
 urlencoding = "2"
 base32 = "0.5"
-structopt = { version = "0.3"}
+clap = { version = "4", features = ["derive"] }
 serde_json = { version = "1"}
 serde = {version = "1", features = ["derive"] }
 
