@@ -18,16 +18,37 @@ pub struct Account {
     name: String,
     secret: String,
     issuer: String,
+    /// Only present for HOTP accounts; TOTP is the default.
+    #[serde(rename = "type", skip_serializing_if = "Option::is_none")]
+    otp_type: Option<OtpType>,
+    /// Only present when the algorithm is not SHA-1.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    algorithm: Option<Algorithm>,
+    /// Only present when the number of digits is not 6.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    digits: Option<i32>,
+    /// Only present for non-zero HOTP counters.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    counter: Option<i64>,
 }
 
-impl Account {
-    fn new(name: String, secret: String, issuer: String) -> Account {
-        Account {
-            name,
-            secret,
-            issuer,
-        }
-    }
+#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, Serialize)]
+#[serde(rename_all = "lowercase")]
+pub enum OtpType {
+    Hotp,
+    Totp,
+}
+
+#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, Serialize)]
+pub enum Algorithm {
+    #[serde(rename = "SHA1")]
+    Sha1,
+    #[serde(rename = "SHA256")]
+    Sha256,
+    #[serde(rename = "SHA512")]
+    Sha512,
+    #[serde(rename = "MD5")]
+    Md5,
 }
 
 /// One QR code of a (possibly multi-QR) Google Authenticator export.
@@ -173,11 +194,21 @@ pub fn extract_batch_from_uri(text: &str) -> Result<MigrationBatch, Box<dyn std:
     let accounts: Vec<Account> = otp_parameters
         .into_iter()
         .map(|p| {
-            Account::new(
-                p.name,
-                base32::encode(alphabet, p.secret.as_slice()),
-                p.issuer,
-            )
+            let secret = base32::encode(alphabet, p.secret.as_slice());
+            let otp_type = otp_type_from_value(p.type_.value());
+            let algorithm = algorithm_from_value(p.algorithm.value());
+            let digits = (p.digits != 0 && p.digits != 6).then_some(p.digits);
+            let counter = (p.counter != 0).then_some(p.counter);
+
+            Account {
+                name: p.name,
+                secret,
+                issuer: p.issuer,
+                otp_type,
+                algorithm,
+                digits,
+                counter,
+            }
         })
         .collect();
 
@@ -188,6 +219,24 @@ pub fn extract_batch_from_uri(text: &str) -> Result<MigrationBatch, Box<dyn std:
         batch_index: migration_payload.batch_index,
         batch_id: migration_payload.batch_id,
     })
+}
+
+/// Map the proto enum to an output value, omitting the TOTP default.
+fn otp_type_from_value(value: i32) -> Option<OtpType> {
+    match value {
+        1 => Some(OtpType::Hotp),
+        _ => None,
+    }
+}
+
+/// Map the proto enum to an output value, omitting the SHA-1 default.
+fn algorithm_from_value(value: i32) -> Option<Algorithm> {
+    match value {
+        2 => Some(Algorithm::Sha256),
+        3 => Some(Algorithm::Sha512),
+        4 => Some(Algorithm::Md5),
+        _ => None,
+    }
 }
 
 /// Merge the batches of one or more exports into a single, de-duplicated list.
@@ -310,11 +359,15 @@ mod tests {
     use super::*;
 
     fn account(name: &str) -> Account {
-        Account::new(
-            name.to_string(),
-            "JBSWY3DPEHPK3PXP".to_string(),
-            "Issuer".to_string(),
-        )
+        Account {
+            name: name.to_string(),
+            secret: "JBSWY3DPEHPK3PXP".to_string(),
+            issuer: "Issuer".to_string(),
+            otp_type: None,
+            algorithm: None,
+            digits: None,
+            counter: None,
+        }
     }
 
     fn batch(id: i32, index: i32, size: i32, accounts: Vec<Account>) -> MigrationBatch {
@@ -324,6 +377,82 @@ mod tests {
             batch_size: size,
             batch_index: index,
             batch_id: id,
+        }
+    }
+
+    use crate::protos::google_auth::{
+        MigrationPayload,
+        migration_payload::{Algorithm as ProtoAlgorithm, OtpParameters, OtpType as ProtoOtpType},
+    };
+    use base64::engine::general_purpose::URL_SAFE_NO_PAD;
+    use protobuf::{EnumOrUnknown, Message};
+
+    fn totp_parameters() -> OtpParameters {
+        let mut parameters = OtpParameters::new();
+        parameters.name = "Example:alice@example.com".to_string();
+        parameters.issuer = "Example".to_string();
+        parameters.secret = b"12345678901234567890".to_vec();
+        parameters.algorithm = EnumOrUnknown::new(ProtoAlgorithm::ALGO_SHA1);
+        parameters.digits = 6;
+        parameters.type_ = EnumOrUnknown::new(ProtoOtpType::OTP_TOTP);
+        parameters
+    }
+
+    fn migration_uri(parameters: Vec<OtpParameters>) -> String {
+        let mut payload = MigrationPayload::new();
+        payload.otp_parameters = parameters;
+        payload.version = 1;
+
+        let bytes = payload.write_to_bytes().unwrap();
+        format!(
+            "otpauth-migration://offline?data={}",
+            URL_SAFE_NO_PAD.encode(bytes)
+        )
+    }
+
+    #[test]
+    fn omits_default_otp_fields() {
+        let batch = extract_batch_from_uri(&migration_uri(vec![totp_parameters()])).unwrap();
+        let value = serde_json::to_value(&batch.accounts[0]).unwrap();
+        let object = value.as_object().unwrap();
+
+        assert_eq!(object.len(), 3);
+        for field in ["type", "algorithm", "digits", "counter"] {
+            assert!(!object.contains_key(field), "{field} should be omitted");
+        }
+    }
+
+    #[test]
+    fn keeps_non_default_otp_fields() {
+        let mut parameters = totp_parameters();
+        parameters.algorithm = EnumOrUnknown::new(ProtoAlgorithm::ALGO_SHA512);
+        parameters.digits = 8;
+        parameters.type_ = EnumOrUnknown::new(ProtoOtpType::OTP_HOTP);
+        parameters.counter = 42;
+
+        let batch = extract_batch_from_uri(&migration_uri(vec![parameters])).unwrap();
+        let value = serde_json::to_value(&batch.accounts[0]).unwrap();
+
+        assert_eq!(value["type"], "hotp");
+        assert_eq!(value["algorithm"], "SHA512");
+        assert_eq!(value["digits"], 8);
+        assert_eq!(value["counter"], 42);
+    }
+
+    #[test]
+    fn maps_all_non_default_algorithms() {
+        for (algorithm, expected) in [
+            (ProtoAlgorithm::ALGO_SHA256, "SHA256"),
+            (ProtoAlgorithm::ALGO_SHA512, "SHA512"),
+            (ProtoAlgorithm::ALGO_MD5, "MD5"),
+        ] {
+            let mut parameters = totp_parameters();
+            parameters.algorithm = EnumOrUnknown::new(algorithm);
+
+            let batch = extract_batch_from_uri(&migration_uri(vec![parameters])).unwrap();
+            let value = serde_json::to_value(&batch.accounts[0]).unwrap();
+
+            assert_eq!(value["algorithm"], expected);
         }
     }
 

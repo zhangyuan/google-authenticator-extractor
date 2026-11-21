@@ -12,7 +12,7 @@ fn runs() {
 
     cmd.arg("-i").arg(image_path).assert()
         .success()
-        .stdout(r#"[{"name":"Example:example@example.local","secret":"43AHZP6DT7U4CM5PAJRT652BBEHXXPT72XJVFBISFVEZ3MFB33MQBCPR","issuer":""}]
+        .stdout(r#"[{"name":"Example:example@example.local","secret":"43AHZP6DT7U4CM5PAJRT652BBEHXXPT72XJVFBISFVEZ3MFB33MQBCPR","issuer":"","digits":1}]
 "#);
 }
 
@@ -27,6 +27,6 @@ fn accepts_multiple_images_and_deduplicates() {
     // Passing the same QR code twice must not duplicate the account.
     cmd.arg("-i").arg(image_path).arg(image_path).assert()
         .success()
-        .stdout(r#"[{"name":"Example:example@example.local","secret":"43AHZP6DT7U4CM5PAJRT652BBEHXXPT72XJVFBISFVEZ3MFB33MQBCPR","issuer":""}]
+        .stdout(r#"[{"name":"Example:example@example.local","secret":"43AHZP6DT7U4CM5PAJRT652BBEHXXPT72XJVFBISFVEZ3MFB33MQBCPR","issuer":"","digits":1}]
 "#);
 }
