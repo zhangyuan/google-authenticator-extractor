@@ -6,6 +6,9 @@ message MigrationPayload {
   enum Algorithm {
     ALGO_INVALID = 0;
     ALGO_SHA1 = 1;
+    ALGO_SHA256 = 2;
+    ALGO_SHA512 = 3;
+    ALGO_MD5 = 4;
   }
 
   enum OtpType {
