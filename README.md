@@ -44,6 +44,17 @@ The output looks like as below:
 [{"name":"******","secret":"**********","issuer":"******"},{"name":"*****","secret":"************","issuer":""}]
 ```
 
+Accounts that differ from the OTP defaults also carry the relevant fields:
+
+- `"type":"hotp"` for HOTP accounts (TOTP is omitted)
+- `"algorithm":"SHA256"`, `"SHA512"` or `"MD5"` (SHA-1 is omitted)
+- `"digits":8` when the account does not use 6 digits
+- `"counter":42` for non-zero HOTP counters
+
+```json
+[{"name":"Exchange:bob@example.com","secret":"******","issuer":"Exchange","type":"hotp","algorithm":"SHA256","digits":8,"counter":42}]
+```
+
 ## How to build from source
 
 > Rust is the programming language of the project, Install Rust by following the instructions in the [official doument](https://www.rust-lang.org/tools/install).
