@@ -23,6 +23,19 @@ chmod a+x google_authenticator_extractor-x86_64-apple-darwin
 ./google_authenticator_extractor-x86_64-apple-darwin -i /path/to/qrcode-image
 ```
 
+If Google Authenticator split the export across several QR codes, pass all of
+them at once. You can repeat `-i`, list several files after one `-i`, or point
+`-i` at a directory:
+
+```bash
+./google_authenticator_extractor-x86_64-apple-darwin -i qr-1.png qr-2.png qr-3.png
+./google_authenticator_extractor-x86_64-apple-darwin -i qr-1.png -i qr-2.png
+./google_authenticator_extractor-x86_64-apple-darwin -i /path/to/screenshots/
+```
+
+The batches are merged into a single list, duplicate accounts are removed, and a
+warning is printed if a QR code of the export is missing.
+
 > Note: OSX may prevent it from running with the message `“google_authenticator_extractor-x86_64-apple-darwin” cannot be opened because the developer cannot be verified.`. You need to go to `System Preferences` - `Security & Privacy` - `General` to allow it.
 
 The output looks like as below:
